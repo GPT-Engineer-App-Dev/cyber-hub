@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, SimpleGrid, Image, Text, VStack, Input } from "@chakra-ui/react";
+import { Box, SimpleGrid, Image, Text, VStack, Input, Button } from "@chakra-ui/react";
 
 const sampleProducts = [
   {
@@ -7,30 +7,54 @@ const sampleProducts = [
     name: "Smartphone",
     image: "https://via.placeholder.com/150",
     price: "$699",
+    category: "Smartphones",
   },
   {
     id: 2,
     name: "Laptop",
     image: "https://via.placeholder.com/150",
     price: "$999",
+    category: "Laptops",
   },
   {
     id: 3,
     name: "Tablet",
     image: "https://via.placeholder.com/150",
     price: "$499",
+    category: "Tablets",
   },
 ];
 
 const Products = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
-  const filteredProducts = sampleProducts.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const categories = ["All", "Smartphones", "Laptops", "Tablets"];
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const filteredProducts = sampleProducts.filter((product) => {
+    const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+    const matchesSearchTerm = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearchTerm;
+  });
 
   return (
     <Box p={4}>
+      <Box mb={4}>
+        {categories.map((category) => (
+          <Button
+            key={category}
+            onClick={() => handleCategoryChange(category)}
+            colorScheme={selectedCategory === category ? "blue" : "gray"}
+            mr={2}
+          >
+            {category}
+          </Button>
+        ))}
+      </Box>
       <Input
         placeholder="Search for products..."
         value={searchTerm}
